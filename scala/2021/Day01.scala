@@ -1,4 +1,4 @@
-val input = io.Source.fromFile("input/day-01-input.txt")
+val input = io.Source.fromFile("../../__input__/2021/day-01-input.txt")
 
 def countDepthIncrements(depths: Seq[Int]): Int =
   depths.sliding(2).count {

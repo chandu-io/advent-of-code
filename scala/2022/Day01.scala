@@ -1,7 +1,7 @@
 import scala.collection.mutable.ArrayBuffer
 
-//val input = io.Source.fromFile("input/day-01-input-sample.txt")
-val input = io.Source.fromFile("input/day-01-input.txt")
+//val input = io.Source.fromFile("../../__input__/2022/day-01-input-sample.txt")
+val input = io.Source.fromFile("../../__input__/2022/day-01-input.txt")
 
 case class Triplet(private val list: List[Int] = List.empty) {
   val (a, b, c) = list match
@@ -38,27 +38,16 @@ def mostCalories(inputSeq: Seq[String]): Triplet =
   }.last
   last._1.replaceIfBigger(last._2)
 
-//def mostCalories1(inputSeq: Seq[String]): Int =
-//  inputSeq.scanLeft((0, 0)) { (pair, line) =>
-//    line match
-//      case "" => pair match
-//        case (max, acc) => (max, 0)
-//      case s => pair match
-//        case (max, acc) =>
-//          val newAcc = acc + s.toInt
-//          (Math.max(max, newAcc), newAcc)
-//  }.last._1
-
 @main def solution: Unit =
   val inputSeq = input.getLines().toSeq
 
   val result = mostCalories(inputSeq)
-  println(s"Top 3: $result")
+  println(s"Top 3 Elves carrying most calories    : $result")
 
   val result1 = result.max
-  println(s"Max: $result1")
+  println(s"Elf carrying most calories            : $result1")
 
   val result2 = result.sum
-  println(s"Top 3 sum: $result2")
+  println(s"Total calories carried by top 3 Elves : $result2")
 
   input.close
