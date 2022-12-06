@@ -4,8 +4,11 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.nio.charset.*;
 import java.nio.file.*;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 import java.util.regex.*;
 import java.util.stream.*;
@@ -16,13 +19,57 @@ public class Day01 {
 	private static final String INPUT_PATH = "../../__input__/2022/day-01-input.txt";
 
 	public static void main(final String... args) {
-		Triplet triplet = mostCalories(getInput());
+
+		final var input = getInput();
+		final var startTime = System.nanoTime();
+		final var triplet = mostCalories(input);
+		final var elapsedDuration = Duration.ofNanos(System.nanoTime() - startTime);
 		log("Top 3 Elves carrying most calories    : ", triplet);
 		log("Elf carrying most calories            : ", triplet.max());
 		log("Total calories carried by top 3 Elves : ", triplet.sum());
+		log("Time taken: ", elapsedDuration.toMillis(), " milliseconds");
 	}
 
+	/**
+	 * Implementation 1: Using additional data structure `TripletWithRunningSum`.
+	 * @param input stream of inputs
+	 * @return a triplet containing top 3 calories
+	 */
 	private static Triplet mostCalories(final Stream<String> input) {
+		final var tripletWithRunningSum = input.reduce(
+				new TripletWithRunningSum(),
+				(t, s) -> s.equals("") ? t.foldSum() : t.addToSum(Integer.parseInt(s)),
+				TripletWithRunningSum::combine);
+		tripletWithRunningSum.foldSum();
+		return tripletWithRunningSum.triplet;
+	}
+
+	/**
+	 * Implementation 1: Using atomic data structures. Better that implementation 3 for large inputs.
+	 * @param input stream of inputs
+	 * @return a triplet containing top 3 calories
+	 */
+	private static Triplet mostCaloriesWithAtomicReferences(final Stream<String> input) {
+		final var accRef = new AtomicInteger(0);
+		final var tripletRef = new AtomicReference<>(new Triplet());
+		input.forEach(s -> accRef.getAndUpdate(acc -> {
+			if (s.equals("")) {
+				tripletRef.getAndUpdate(triplet -> triplet.replaceIfBigger(acc));
+				return 0;
+			} else {
+				return acc + Integer.parseInt(s);
+			}
+		}));
+		tripletRef.getAndUpdate(triplet -> triplet.replaceIfBigger(accRef.get()));
+		return tripletRef.get();
+	}
+
+	/**
+	 * Implementation 3: Using plain mutation and for-loop. Not ideal for large inputs.
+	 * @param input stream of inputs
+	 * @return a triplet containing top 3 calories
+	 */
+		private static Triplet mostCaloriesWithMutation(final Stream<String> input) {
 		var acc = 0;
 		var triplet = new Triplet();
 		for (final var s : input.collect(Collectors.toUnmodifiableList())) {
@@ -38,6 +85,10 @@ public class Day01 {
 		return triplet;
 	}
 
+	/**
+	 * A data structure to hold three integer values,
+	 * with option to replace the lowest with a value bigger than the lowest.
+	 */
 	private static final class Triplet {
 
 		public final int a;
@@ -68,6 +119,10 @@ public class Day01 {
 			}
 		}
 
+		public static Triplet combine(final Triplet t1, final Triplet t2) {
+			return t1.replaceIfBigger(t2.a).replaceIfBigger(t2.b).replaceIfBigger(t2.c);
+		}
+
 		public int max() { return Math.max(a, Math.max(b, c)); }
 
 		public int min() { return Math.min(a, Math.min(b, c)); }
@@ -77,6 +132,39 @@ public class Day01 {
 		@Override
 		public String toString() {
 			return a + ", " + b + ", " + c;
+		}
+	}
+
+	/**
+	 * A data structure to hold triplet and running sum for a stream of input data.
+	 */
+	private static final class TripletWithRunningSum {
+		public final Triplet triplet;
+		public final int sum;
+
+		public TripletWithRunningSum() {
+			this(new Triplet(), 0);
+		}
+
+		public TripletWithRunningSum(final Triplet triplet) {
+			this(triplet, 0);
+		}
+
+		public TripletWithRunningSum(final Triplet triplet, final int sum) {
+			this.triplet = triplet;
+			this.sum = sum;
+		}
+
+		public TripletWithRunningSum foldSum() {
+			return new TripletWithRunningSum(triplet.replaceIfBigger(sum), 0);
+		}
+
+		public TripletWithRunningSum addToSum(final int n) {
+			return new TripletWithRunningSum(triplet, sum + n);
+		}
+
+		public static TripletWithRunningSum combine(final TripletWithRunningSum t1, final TripletWithRunningSum t2) {
+			return new TripletWithRunningSum(Triplet.combine(t1.foldSum().triplet, t2.foldSum().triplet));
 		}
 	}
 
