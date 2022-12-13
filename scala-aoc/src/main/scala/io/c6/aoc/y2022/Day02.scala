@@ -1,11 +1,14 @@
 package io.c6.aoc.y2022
 
+import io.c6.aoc.BaseSolution
+import io.c6.aoc.Day._02
+import io.c6.aoc.Year._2022
+
 import scala.io.{BufferedSource, Source}
 
-object Day02:
+object Day02 extends BaseSolution:
 
-  //private val input: BufferedSource = Source.fromResource("input/2022-day-02-sample-input.txt")
-  private val input: BufferedSource = Source.fromResource("input/2022-day-02-input.txt")
+  protected val inputFileName: String = BaseSolution.getInputFileName(_2022, _02)
 
   private enum Outcome(val points: Int):
     case Win extends Outcome(6)
@@ -27,10 +30,10 @@ object Day02:
     case Y extends MyResponse(Paper)
     case Z extends MyResponse(Scissors)
 
+  import MyResponse.*
+  import OpponentPlay.*
   import Outcome.*
   import Shape.*
-  import OpponentPlay.*
-  import MyResponse.*
 
   private object OpponentPlay:
     def from(str: String): OpponentPlay = str match
@@ -76,21 +79,22 @@ object Day02:
     case Y => myResponses(abc.shape, Draw).points + Draw.points
     case Z => myResponses(abc.shape, Win).points + Win.points
 
-  @main def solutionY2022Day02: Unit =
-    val inputSeq = input.getLines().toSeq.filter(_.nonEmpty)
+  protected override def solution: Seq[String] => Unit = { input =>
+    val nonEmptyInput = input.filter(_.nonEmpty)
 
-    val result1 = inputSeq
+    val result1 = nonEmptyInput
       .map(_.split(" "))
       .map(arr => (OpponentPlay.from(arr(0)), MyResponse.from(arr(1))))
       .map { case (abc, xyz) => pointsForStrategy1(abc, xyz) }
       .sum
     println(s"Total score for given first strategy: $result1")
 
-    val result2 = inputSeq
+    val result2 = nonEmptyInput
       .map(_.split(" "))
       .map(arr => (OpponentPlay.from(arr(0)), MyResponse.from(arr(1))))
       .map { case (abc, xyz) => pointsForStrategy2(abc, xyz) }
       .sum
     println(s"Total score for given second strategy: $result2")
+  }
 
-    input.close
+@main def runDay02: Unit = Day02.run

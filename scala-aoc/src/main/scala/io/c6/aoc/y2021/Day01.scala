@@ -1,11 +1,14 @@
 package io.c6.aoc.y2021
 
+import io.c6.aoc.BaseSolution
+import io.c6.aoc.Day._01
+import io.c6.aoc.Year._2021
+
 import scala.io.{BufferedSource, Source}
 
-object Day01:
+private object Day01 extends BaseSolution:
 
-  //private val input: BufferedSource = Source.fromResource("input/2021-day-01-sample-input.txt")
-  private val input: BufferedSource = Source.fromResource("input/2021-day-01-input.txt")
+  protected val inputFileName: String = BaseSolution.getInputFileName(_2021, _01)
 
   private def countDepthIncrements(depths: Seq[Int]): Int =
     depths.sliding(2).count {
@@ -13,13 +16,14 @@ object Day01:
       case _ => false
     }
 
-  @main def solutionY2021Day01: Unit =
-    val depths = input.getLines().map(_.toInt).toSeq
+  protected override def solution: Seq[String] => Unit = { input =>
+    val depths = input.map(_.toInt)
     val result1 = countDepthIncrements(depths)
     println(result1)
 
     val depthSums = depths.sliding(3).map(_.sum).toSeq
     val result2 = countDepthIncrements(depthSums)
     println(result2)
+  }
 
-    input.close
+@main def runDay01: Unit = Day01.run
