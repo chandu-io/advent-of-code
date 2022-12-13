@@ -1,14 +1,15 @@
 package io.c6.aoc.y2021
 
 import io.c6.aoc.BaseSolution
-import io.c6.aoc.Day._01
-import io.c6.aoc.Year._2021
+import io.c6.aoc.Day.*
+import io.c6.aoc.Year.*
+import io.c6.aoc.InputType.*
 
 import scala.io.{BufferedSource, Source}
 
 private object Day01 extends BaseSolution:
 
-  protected val inputFileName: String = BaseSolution.getInputFileName(_2021, _01)
+  protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2021, _01)
 
   private def countDepthIncrements(depths: Seq[Int]): Int =
     depths.sliding(2).count {
@@ -16,14 +17,16 @@ private object Day01 extends BaseSolution:
       case _ => false
     }
 
-  protected override def solution: Seq[String] => Unit = { input =>
+  protected override def part1Solution: Seq[String] => Unit = { input =>
     val depths = input.map(_.toInt)
-    val result1 = countDepthIncrements(depths)
-    println(result1)
+    val result = countDepthIncrements(depths)
+    println(s"Result for part 1: $result")
+  }
 
-    val depthSums = depths.sliding(3).map(_.sum).toSeq
-    val result2 = countDepthIncrements(depthSums)
-    println(result2)
+  protected override def part2Solution: Seq[String] => Unit = { input =>
+    val depthSums = input.map(_.toInt).sliding(3).map(_.sum).toSeq
+    val result = countDepthIncrements(depthSums)
+    println(s"Result for part 2: $result")
   }
 
 @main def runDay01: Unit = Day01.run

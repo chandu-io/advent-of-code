@@ -1,14 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.BaseSolution
-import io.c6.aoc.Day._01
-import io.c6.aoc.Year._2022
+import io.c6.aoc.Day.*
+import io.c6.aoc.Year.*
+import io.c6.aoc.InputType.*
 
 import scala.io.{BufferedSource, Source}
 
 object Day01 extends BaseSolution:
 
-  protected val inputFileName: String = BaseSolution.getInputFileName(_2022, _01)
+  protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2022, _01, A1)
 
   private case class Triplet(private val list: List[Int] = List.empty) {
     val (a, b, c) = list match
@@ -45,15 +46,14 @@ object Day01 extends BaseSolution:
     }.last
     last._1.replaceIfBigger(last._2)
 
-  protected override def solution: Seq[String] => Unit = { input =>
-    val result = mostCalories(input)
-    println(s"Top 3 Elves carrying most calories    : $result")
+  protected override def part1Solution: Seq[String] => Unit = { input =>
+    val result = mostCalories(input).max
+    println(s"Result for part 1: $result")
+  }
 
-    val result1 = result.max
-    println(s"Elf carrying most calories            : $result1")
-
-    val result2 = result.sum
-    println(s"Total calories carried by top 3 Elves : $result2")
+  protected override def part2Solution: Seq[String] => Unit = { input =>
+    val result = mostCalories(input).sum
+    println(s"Result for part 2: $result")
   }
 
 @main def runDay01: Unit = Day01.run
