@@ -12,23 +12,27 @@ object Day03 extends BaseSolution:
   protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2022, _03, A1)
   protected override val part2InputFileName: String = BaseSolution.getInputFileName(_2022, _03, A2)
 
-  private val priority = ('a' to 'z').appendedAll('A' to 'Z').zipWithIndex.toMap
+  private val priorityMap: Map[Char, Int] = ('a' to 'z').appendedAll('A' to 'Z')
+    .zipWithIndex.toMap.transform { case _ -> p => p + 1 }
+
+  extension (str: String)
+    private inline def half: Seq[String] = {
+      val n = str.length / 2
+      val (leftHalf, rightHalf) = str.zipWithIndex.partition { case _ -> i => i < n }
+      Seq(leftHalf.map(_._1).mkString, rightHalf.map(_._1).mkString)
+    }
+
+  extension (seq: Seq[String])
+    private inline def priority: Int =
+      seq.reduce(_ intersect _).headOption.map(priorityMap).getOrElse(0)
 
   protected override def part1Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty).map { s =>
-      val n = s.length / 2
-      // split the line into equal halves
-      val (a, b) = s.zipWithIndex.partition { case (_, i) => i < n }
-      // find the common item int the two halves and find the priority (zero-based) and add 1
-      a.map(_._1).toSet.intersect(b.map(_._1).toSet).lastOption.map(priority).map(_ + 1).getOrElse(0)
-    }.sum
+    val result = input.filter(_.nonEmpty).map(_.half.priority).sum
     println(s"Result for part 1: $result")
   }
 
   protected override def part2Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty).grouped(3).map { s =>
-      s.map(_.toSet).reduce(_.intersect(_)).lastOption.map(priority).map(_ + 1).getOrElse(0)
-    }.sum
+    val result = input.filter(_.nonEmpty).grouped(3).map(_.priority).sum
     println(s"Result for part 2: $result")
   }
 
