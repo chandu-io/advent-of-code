@@ -10,8 +10,8 @@ import scala.annotation.tailrec
 object Day04 extends BaseSolution:
   override protected def part1InputFileName: String = BaseSolution.getInputFileName(_2022, _04, A1)
 
-  type Assignment = (Int, Int)
-  type AssignmentPair = (Assignment, Assignment)
+  private type Assignment = (Int, Int)
+  private type AssignmentPair = (Assignment, Assignment)
 
   private val nonOverlappingAssignmentPair = (0 -> 1, 2 -> 3)
 
