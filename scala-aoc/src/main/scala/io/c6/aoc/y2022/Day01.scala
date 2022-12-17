@@ -1,15 +1,14 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.BaseSolution
+import io.c6.aoc.BaseSolution.*
 import io.c6.aoc.Day.*
 import io.c6.aoc.Year.*
 import io.c6.aoc.InputType.*
 
-import scala.io.{BufferedSource, Source}
-
 object Day01 extends BaseSolution:
 
-  protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2022, _01, A1)
+  protected override val part1InputFileName: String = getInputFileName(_2022, _01, A1)
 
   private case class Triplet(private val list: List[Int] = List.empty) {
     val (a, b, c) = list match

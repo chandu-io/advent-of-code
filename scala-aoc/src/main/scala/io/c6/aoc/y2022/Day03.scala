@@ -1,16 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.BaseSolution
+import io.c6.aoc.BaseSolution.*
 import io.c6.aoc.Day.*
 import io.c6.aoc.Year.*
 import io.c6.aoc.InputType.*
 
-import scala.io.{BufferedSource, Source}
-
 object Day03 extends BaseSolution:
 
-  protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2022, _03, A1)
-  protected override val part2InputFileName: String = BaseSolution.getInputFileName(_2022, _03, A2)
+  protected override val part1InputFileName: String = getInputFileName(_2022, _03, A1)
+  protected override val part2InputFileName: String = getInputFileName(_2022, _03, A2)
 
   private val priorityMap: Map[Char, Int] = ('a' to 'z').appendedAll('A' to 'Z')
     .zipWithIndex.toMap.transform { case _ -> p => p + 1 }
@@ -27,12 +26,12 @@ object Day03 extends BaseSolution:
       seq.reduce(_ intersect _).headOption.map(priorityMap).getOrElse(0)
 
   protected override def part1Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty).map(_.half.priority).sum
+    val result = input.map(_.half.priority).sum
     println(s"Result for part 1: $result")
   }
 
   protected override def part2Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty).grouped(3).map(_.priority).sum
+    val result = input.grouped(3).map(_.priority).sum
     println(s"Result for part 2: $result")
   }
 

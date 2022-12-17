@@ -1,15 +1,14 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.BaseSolution
+import io.c6.aoc.BaseSolution.*
 import io.c6.aoc.Day.*
 import io.c6.aoc.Year.*
 import io.c6.aoc.InputType.*
 
-import scala.io.{BufferedSource, Source}
-
 object Day02 extends BaseSolution:
 
-  protected override val part1InputFileName: String = BaseSolution.getInputFileName(_2022, _02, A1)
+  protected override val part1InputFileName: String = getInputFileName(_2022, _02, A1)
 
   private enum Outcome(val points: Int):
     case Win extends Outcome(6)
@@ -80,21 +79,16 @@ object Day02 extends BaseSolution:
     case Y => myResponses(abc.shape, Draw).points + Draw.points
     case Z => myResponses(abc.shape, Win).points + Win.points
 
+  private def parse(line: String): (OpponentPlay, MyResponse) = line.split(" ") match
+    case Array(abc, xyz) => OpponentPlay.from(abc) -> MyResponse.from(xyz)
+
   protected override def part1Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty)
-      .map(_.split(" "))
-      .map(arr => (OpponentPlay.from(arr(0)), MyResponse.from(arr(1))))
-      .map { case (abc, xyz) => pointsForStrategy1(abc, xyz) }
-      .sum
+    val result = input.map(parse).map(pointsForStrategy1).sum
     println(s"Result for part 1: $result")
   }
 
   protected override def part2Solution: Seq[String] => Unit = { input =>
-    val result = input.filter(_.nonEmpty)
-      .map(_.split(" "))
-      .map(arr => (OpponentPlay.from(arr(0)), MyResponse.from(arr(1))))
-      .map { case (abc, xyz) => pointsForStrategy2(abc, xyz) }
-      .sum
+    val result = input.map(parse).map(pointsForStrategy2).sum
     println(s"Result for part 2: $result")
   }
 
