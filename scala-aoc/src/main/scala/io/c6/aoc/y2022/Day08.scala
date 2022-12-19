@@ -24,15 +24,12 @@ object Day08 extends BaseSolution:
     val treeGrid: Grid[Byte] = Array.ofDim[Byte](rows, cols)
     val visibilityGrid: Grid[Boolean] = Array.ofDim[Boolean](rows, cols)
 
-    input.zipWithIndex.foreach { case (s, i) =>
-      s.zipWithIndex.foreach { case (c, j) =>
-        treeGrid(i)(j) = c.asDigit.toByte
-        visibilityGrid(i)(j) = false
-      }
-    }
+    for i <- 0 until rows; j <- 0 until cols yield
+      treeGrid(i)(j) = input(i)(j).asDigit.toByte
+      visibilityGrid(i)(j) = false
     // treeGrid.print(_.toString)
 
-    for {i <- 0 until rows; j <- 0 until cols} yield (i, j) match
+    for i <- 0 until rows; j <- 0 until cols yield (i, j) match
       case (a, _) if a == 0 || a == rows - 1 =>
         visibilityGrid(i)(j) = true
       case (_, b) if b == 0 || b == cols - 1 =>
@@ -55,14 +52,11 @@ object Day08 extends BaseSolution:
     val treeGrid: Grid[Byte] = Array.ofDim[Byte](rows, cols)
     val scenicScoreGrid: Grid[Int] = Array.ofDim[Int](rows, cols)
 
-    input.zipWithIndex.foreach { case (s, i) =>
-      s.zipWithIndex.foreach { case (c, j) =>
-        treeGrid(i)(j) = c.asDigit.toByte
-        scenicScoreGrid(i)(j) = 0
-      }
-    }
+    for i <- 0 until rows; j <- 0 until cols yield
+      treeGrid(i)(j) = input(i)(j).asDigit.toByte
+      scenicScoreGrid(i)(j) = 0
 
-    for {i <- 0 until rows; j <- 0 until cols} yield (i, j) match
+    for i <- 0 until rows; j <- 0 until cols yield (i, j) match
       case (a, _) if a == 0 || a == rows - 1 =>
         scenicScoreGrid(i)(j) = 0
       case (_, b) if b == 0 || b == cols - 1 =>

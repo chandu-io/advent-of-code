@@ -15,11 +15,10 @@ object Day03 extends BaseSolution:
     .zipWithIndex.toMap.transform { case _ -> p => p + 1 }
 
   extension (str: String)
-    private inline def half: Seq[String] = {
+    private inline def half: Seq[String] =
       val n = str.length / 2
       val (leftHalf, rightHalf) = str.zipWithIndex.partition { case _ -> i => i < n }
       Seq(leftHalf.map(_._1).mkString, rightHalf.map(_._1).mkString)
-    }
 
   extension (seq: Seq[String])
     private inline def priority: Int =

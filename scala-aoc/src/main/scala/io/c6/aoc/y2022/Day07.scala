@@ -13,13 +13,12 @@ object Day07 extends BaseSolution:
 
   private val slash = "/"
 
-  private sealed trait FileEntry {
+  private sealed trait FileEntry:
     def name: String
 
     def size: Long
-  }
 
-  private class Dir(val name: String, val parent: Option[Dir]) extends FileEntry {
+  private class Dir(val name: String, val parent: Option[Dir]) extends FileEntry:
     private val _children: mutable.Set[FileEntry] = mutable.LinkedHashSet()
 
     def children: Set[FileEntry] = _children.toSet
@@ -35,13 +34,11 @@ object Day07 extends BaseSolution:
     override def equals(obj: Any): Boolean = s"$obj" == toString
 
     override def hashCode(): Int = toString.hashCode
-  }
 
-  private case class File(name: String, size: Long, parent: Dir) extends FileEntry {
+  private case class File(name: String, size: Long, parent: Dir) extends FileEntry:
     override def toString: String = parent.toString + slash + name
-  }
 
-  private class CommandExecutor {
+  private class CommandExecutor:
     val root: Dir = Dir(slash, None)
     private var pwd: Dir = root
     private val uniqueDirs: mutable.Set[Dir] = mutable.LinkedHashSet()
@@ -63,7 +60,6 @@ object Day07 extends BaseSolution:
       uniqueDirs += pwd
 
     def allDirs: Set[Dir] = uniqueDirs.toSet
-  }
 
   override protected def part1Solution: Seq[String] => Unit = { input =>
     val executor = new CommandExecutor

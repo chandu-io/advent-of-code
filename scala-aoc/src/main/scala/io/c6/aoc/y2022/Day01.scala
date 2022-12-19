@@ -10,7 +10,7 @@ object Day01 extends BaseSolution:
 
   protected override val part1InputFileName: String = getInputFileName(_2022, _01, A1)
 
-  private case class Triplet(private val list: List[Int] = List.empty) {
+  private case class Triplet(private val list: List[Int] = List.empty):
     val (a, b, c) = list match
       case a :: b :: c :: _ => (a, b, c)
       case a :: b :: Nil => (a, b, 0)
@@ -33,17 +33,16 @@ object Day01 extends BaseSolution:
     def sum: Int = a + b + c
 
     override def toString: String = s"$a, $b, $c"
-  }
 
   private def mostCalories(input: Seq[String]): Triplet =
-    val last = input.scanLeft((Triplet(), 0)) { (pair, line) =>
+    val (triplet, acc) = input.scanLeft((Triplet(), 0)) { (pair, line) =>
       line match
         case "" => pair match
           case (triplet, acc) => (triplet.replaceIfBigger(acc), 0)
         case s => pair match
           case (triplet, acc) => (triplet, acc + s.toInt)
     }.last
-    last._1.replaceIfBigger(last._2)
+    triplet.replaceIfBigger(acc)
 
   protected override def part1Solution: Seq[String] => Unit = { input =>
     val result = mostCalories(input).max
