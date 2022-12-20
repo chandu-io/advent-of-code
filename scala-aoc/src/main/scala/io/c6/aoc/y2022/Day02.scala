@@ -3,10 +3,18 @@ package io.c6.aoc.y2022
 import io.c6.aoc.BaseSolution
 import io.c6.aoc.BaseSolution.*
 import io.c6.aoc.Day.*
-import io.c6.aoc.Year.*
 import io.c6.aoc.InputType.*
+import io.c6.aoc.Year.*
+
+import scala.language.implicitConversions
 
 object Day02 extends BaseSolution:
+
+  import MyResponse.*
+  import OpponentPlay.*
+  import Outcome.*
+  import Shape.*
+  import StringConversions.given
 
   protected override val part1InputFileName: String = getInputFileName(_2022, _02, A1)
 
@@ -29,23 +37,6 @@ object Day02 extends BaseSolution:
     case X extends MyResponse(Rock)
     case Y extends MyResponse(Paper)
     case Z extends MyResponse(Scissors)
-
-  import MyResponse.*
-  import OpponentPlay.*
-  import Outcome.*
-  import Shape.*
-
-  private object OpponentPlay:
-    def from(str: String): OpponentPlay = str match
-      case "A" => A
-      case "B" => B
-      case _ => C
-
-  private object MyResponse:
-    def from(str: String): MyResponse = str match
-      case "X" => X
-      case "Y" => Y
-      case _ => Z
 
   private val outcomes: Map[(Shape, Shape), Outcome] = Map(
     (Rock, Rock) -> Draw,
@@ -71,25 +62,38 @@ object Day02 extends BaseSolution:
     (Scissors, Draw) -> Scissors
   )
 
-  private def pointsForStrategy1(abc: OpponentPlay, xyz: MyResponse): Int =
-    outcomes(abc.shape, xyz.shape).points + xyz.shape.points
+  private type PlayPair = (OpponentPlay, MyResponse)
 
-  private def pointsForStrategy2(abc: OpponentPlay, xyz: MyResponse): Int = xyz match
-    case X => myResponses(abc.shape, Loose).points + Loose.points
-    case Y => myResponses(abc.shape, Draw).points + Draw.points
-    case Z => myResponses(abc.shape, Win).points + Win.points
+  private object StringConversions:
+    private given toOpponentPlay: Conversion[String, OpponentPlay] = str => str match
+      case "A" => A
+      case "B" => B
+      case _ => C
 
-  private def parse(line: String): (OpponentPlay, MyResponse) = line.split(" ") match
-    case Array(abc, xyz) => OpponentPlay.from(abc) -> MyResponse.from(xyz)
+    private given toMyResponse: Conversion[String, MyResponse] = str => str match
+      case "X" => X
+      case "Y" => Y
+      case _ => Z
 
-  protected override def part1Solution: Seq[String] => Unit = { input =>
-    val result = input.map(parse).map(pointsForStrategy1).sum
+    given Conversion[String, PlayPair] = str => str.split(" ") match
+      case Array(abc, xyz) => toOpponentPlay(abc) -> toMyResponse(xyz)
+
+  private def pointsForStrategy1(playPair: PlayPair): Int = playPair match
+    case abc -> xyz =>
+      outcomes(abc.shape, xyz.shape).points + xyz.shape.points
+
+  private def pointsForStrategy2(playPair: PlayPair): Int = playPair match
+    case abc -> xyz => xyz match
+      case X => myResponses(abc.shape, Loose).points + Loose.points
+      case Y => myResponses(abc.shape, Draw).points + Draw.points
+      case Z => myResponses(abc.shape, Win).points + Win.points
+
+  protected override def part1Solution: Seq[String] => Unit = input =>
+    val result = input.map(pointsForStrategy1(_)).sum
     println(s"Result for part 1: $result")
-  }
 
-  protected override def part2Solution: Seq[String] => Unit = { input =>
-    val result = input.map(parse).map(pointsForStrategy2).sum
+  protected override def part2Solution: Seq[String] => Unit = input =>
+    val result = input.map(pointsForStrategy2(_)).sum
     println(s"Result for part 2: $result")
-  }
 
 @main def runDay02: Unit = Day02.run
