@@ -6,8 +6,6 @@ import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
-import scala.collection.mutable
-
 //noinspection DuplicatedCode
 object Day08 extends BaseSolution:
   override protected def part1InputFileName: String = getInputFileName(_2022, _08, A1)
@@ -15,9 +13,18 @@ object Day08 extends BaseSolution:
   private type Grid[T] = Array[Array[T]]
 
   extension[T] (grid: Grid[T])
-    private def print(mapper: Function[T, String]): Unit =
-      grid.map(_.map(mapper).mkString(" ")).foreach(println)
+    private def print(toString: Function[T, String]): Unit =
+      grid.map(_.map(toString).mkString(" ")).foreach(println)
       println()
+
+  private def isVisibleFromOutside(adjacentHeights: Seq[Byte])(height: Byte): Boolean =
+    adjacentHeights.exists(_ >= height)
+
+  private def visibleTreeCount(adjacentHeights: Seq[Byte])(height: Byte): Int =
+    val idx = adjacentHeights.indexWhere(_ >= height)
+    if idx == -1 then adjacentHeights.length
+    else if adjacentHeights(idx) == height then idx + 1
+    else idx
 
   override protected def part1Solution: Seq[String] => Unit = input =>
     val rows -> cols = input.length -> input.head.length
@@ -36,10 +43,10 @@ object Day08 extends BaseSolution:
         visibilityGrid(i)(j) = true
       case (a, b) =>
         val h = treeGrid(i)(j)
-        val left = (0 until b).exists(treeGrid(a)(_) >= h)
-        val right = (b + 1 until cols).exists(treeGrid(a)(_) >= h)
-        val up = (0 until a).exists(treeGrid(_)(b) >= h)
-        val down = (a + 1 until rows).exists(treeGrid(_)(b) >= h)
+        val left = isVisibleFromOutside((0 until b).map(treeGrid(a)(_)))(h)
+        val right = isVisibleFromOutside((b + 1 until cols).map(treeGrid(a)(_)))(h)
+        val up = isVisibleFromOutside((0 until a).map(treeGrid(_)(b)))(h)
+        val down = isVisibleFromOutside((a + 1 until rows).map(treeGrid(_)(b)))(h)
         visibilityGrid(i)(j) = !(left && right && up && down)
     //visibilityGrid.print(if _ then "1" else "0")
 
@@ -62,13 +69,10 @@ object Day08 extends BaseSolution:
         scenicScoreGrid(i)(j) = 0
       case (a, b) =>
         val h = treeGrid(i)(j)
-        def visibleTreeCount(heights: Seq[Byte]): Int =
-          val idx = heights.indexWhere(_ >= h)
-          if idx == -1 then heights.length else if heights(idx) == h then idx + 1 else idx
-        val left = visibleTreeCount((0 until b).reverse.map(treeGrid(a)(_)))
-        val right = visibleTreeCount((b + 1 until cols).map(treeGrid(a)(_)))
-        val up = visibleTreeCount((0 until a).reverse.map(treeGrid(_)(b)))
-        val down = visibleTreeCount((a + 1 until rows).map(treeGrid(_)(b)))
+        val left = visibleTreeCount((0 until b).reverse.map(treeGrid(a)(_)))(h)
+        val right = visibleTreeCount((b + 1 until cols).map(treeGrid(a)(_)))(h)
+        val up = visibleTreeCount((0 until a).reverse.map(treeGrid(_)(b)))(h)
+        val down = visibleTreeCount((a + 1 until rows).map(treeGrid(_)(b)))(h)
         scenicScoreGrid(i)(j) = left * right * up * down
     //scenicScoreGrid.print(s => s"%2d".format(s))
 

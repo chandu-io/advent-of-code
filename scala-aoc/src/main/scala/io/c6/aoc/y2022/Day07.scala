@@ -28,7 +28,7 @@ object Day07 extends BaseSolution:
     def add(entry: FileEntry): Unit = _children += entry
 
     override def toString: String = parent.map(_.toString)
-      .map { s => if (s == slash) s + name else s + slash + name }
+      .map { s => if s == slash then s + name else s + slash + name }
       .getOrElse(slash)
 
     override def equals(obj: Any): Boolean = s"$obj" == toString
@@ -50,7 +50,9 @@ object Day07 extends BaseSolution:
         case Array("$", "cd", "..") =>
           pwd = pwd.parent.getOrElse(root)
         case Array("$", "cd", dirName) =>
-          pwd.children.find(e => e.name == dirName && e.isInstanceOf[Dir]).foreach { e => pwd = e.asInstanceOf[Dir] }
+          pwd.children
+            .find { e => e.name == dirName && e.isInstanceOf[Dir] }
+            .foreach { e => pwd = e.asInstanceOf[Dir] }
         case Array("$", "ls") =>
           ()
         case Array("dir", dirName) =>
@@ -64,7 +66,8 @@ object Day07 extends BaseSolution:
   override protected def part1Solution: Seq[String] => Unit = input =>
     val executor = new CommandExecutor
     input.foreach(executor.execute)
-    val result = executor.allDirs.toSeq.map(_.size).filter(_ <= 100_000).sum
+    val thresholdSpace = 100_000
+    val result = executor.allDirs.toSeq.map(_.size).filter(_ <= thresholdSpace).sum
     println(s"Result for part 1: $result")
 
   override protected def part2Solution: Seq[String] => Unit = input =>
