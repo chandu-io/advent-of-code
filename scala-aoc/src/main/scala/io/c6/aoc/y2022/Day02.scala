@@ -1,42 +1,49 @@
 package io.c6.aoc.y2022
 
-import io.c6.aoc.BaseSolution
-import io.c6.aoc.BaseSolution.*
-import io.c6.aoc.Day.*
-import io.c6.aoc.InputType.*
-import io.c6.aoc.Year.*
+import io.c6.aoc.util.BaseSolution
+import io.c6.aoc.util.BaseSolution.*
+import io.c6.aoc.util.Day.*
+import io.c6.aoc.util.InputType.*
+import io.c6.aoc.util.Year.*
 
 import scala.language.implicitConversions
 
 object Day02 extends BaseSolution:
-
-  import MyResponse.*
-  import OpponentPlay.*
-  import Outcome.*
-  import Shape.*
-  import StringConversions.given
-
   protected override val part1InputFileName: String = getInputFileName(_2022, _02, A1)
 
-  private enum Outcome(val points: Int):
-    case Win extends Outcome(6)
-    case Draw extends Outcome(3)
-    case Loose extends Outcome(0)
+  import StringConversions.given
 
-  private enum Shape(val points: Int):
-    case Rock extends Shape(1)
-    case Paper extends Shape(2)
-    case Scissors extends Shape(3)
+  private sealed trait Outcome(val points: Int)
 
-  private enum OpponentPlay(val shape: Shape):
-    case A extends OpponentPlay(Rock)
-    case B extends OpponentPlay(Paper)
-    case C extends OpponentPlay(Scissors)
+  private object Win extends Outcome(6)
 
-  private enum MyResponse(val shape: Shape):
-    case X extends MyResponse(Rock)
-    case Y extends MyResponse(Paper)
-    case Z extends MyResponse(Scissors)
+  private object Draw extends Outcome(3)
+
+  private object Loose extends Outcome(0)
+
+  private sealed trait Shape(val points: Int)
+
+  private object Rock extends Shape(1)
+
+  private object Paper extends Shape(2)
+
+  private object Scissors extends Shape(3)
+
+  private sealed trait OpponentPlay(val shape: Shape)
+
+  private object A extends OpponentPlay(Rock)
+
+  private object B extends OpponentPlay(Paper)
+
+  private object C extends OpponentPlay(Scissors)
+
+  private sealed trait MyResponse(val shape: Shape)
+
+  private object X extends MyResponse(Rock)
+
+  private object Y extends MyResponse(Paper)
+
+  private object Z extends MyResponse(Scissors)
 
   private val outcomes: Map[(Shape, Shape), Outcome] = Map(
     (Rock, Rock) -> Draw,

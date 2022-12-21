@@ -1,10 +1,10 @@
 package io.c6.aoc.y2022
 
-import io.c6.aoc.BaseSolution
-import io.c6.aoc.BaseSolution.*
-import io.c6.aoc.Day.*
-import io.c6.aoc.InputType.*
-import io.c6.aoc.Year.*
+import io.c6.aoc.util.BaseSolution
+import io.c6.aoc.util.BaseSolution.*
+import io.c6.aoc.util.Day.*
+import io.c6.aoc.util.InputType.*
+import io.c6.aoc.util.Year.*
 
 import scala.collection.mutable
 
@@ -14,17 +14,22 @@ object Day05 extends BaseSolution:
   private type Crate = Char
   private type Stack = mutable.Stack[Crate]
 
-  private enum Crane:
-    case CrateMover9000, CrateMover9001
+  private sealed trait Crane
 
-  private enum Instruction:
-    case LoadInstruction, MoveInstruction, SomethingElse
+  private object CrateMover9000 extends Crane
 
-  import Crane.*
-  import Instruction.*
+  private object CrateMover9001 extends Crane
+
+  private sealed trait Instruction
+
+  private object LoadInstruction extends Instruction
+
+  private object MoveInstruction extends Instruction
+
+  private object SomethingElse extends Instruction
 
   extension (stack: Stack)
-    private def load(crate: Crate): Stack = if (crate.isUpper) stack.append(crate) else stack
+    private def load(crate: Crate): Stack = if crate.isUpper then stack.append(crate) else stack
 
   extension (crane: Crane)
     private def move(count: Int, from: Stack, to: Stack): Unit = crane match
@@ -47,29 +52,24 @@ object Day05 extends BaseSolution:
       case 'm' => MoveInstruction
       case _ => SomethingElse
 
-  private def processInstruction(stacks: Array[Stack], crane: Crane)(line: String): Unit =
+  private def processInstruction(crane: Crane)(stacks: Array[Stack], line: String): Array[Stack] =
     toInstruction(line) match
       case LoadInstruction =>
-        parseLoadInstruction(line).foreach { case id -> crate =>
-          stacks(id).load(crate)
-        }
+        parseLoadInstruction(line).foreach { case id -> crate => stacks(id).load(crate) }
       case MoveInstruction =>
         val (count, from, to) = parseMoveInstruction(line)
         crane.move(count, stacks(from), stacks(to))
       case SomethingElse => ()
+    stacks
 
-  override protected def part1Solution: Seq[String] => Unit = { input =>
+  override protected def part1Solution: Seq[String] => Unit = input =>
     val stacks = Array.fill((input.head.length + 1) / gap)(new Stack)
-    input.foreach(processInstruction(stacks, CrateMover9000))
-    val result = stacks.map(_.top).mkString
+    val result = input.foldLeft(stacks)(processInstruction(CrateMover9000)).map(_.top).mkString
     println(s"Result for part 1: $result")
-  }
 
-  override protected def part2Solution: Seq[String] => Unit = { input =>
+  override protected def part2Solution: Seq[String] => Unit = input =>
     val stacks = Array.fill((input.head.length + 1) / gap)(new Stack)
-    input.foreach(processInstruction(stacks, CrateMover9001))
-    val result = stacks.map(_.top).mkString
+    val result = input.foldLeft(stacks)(processInstruction(CrateMover9001)).map(_.top).mkString
     println(s"Result for part 2: $result")
-  }
 
 @main def runDay05: Unit = Day05.run

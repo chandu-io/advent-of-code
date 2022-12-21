@@ -1,10 +1,10 @@
 package io.c6.aoc.y2022
 
-import io.c6.aoc.BaseSolution
-import io.c6.aoc.BaseSolution.*
-import io.c6.aoc.Day.*
-import io.c6.aoc.InputType.*
-import io.c6.aoc.Year.*
+import io.c6.aoc.util.BaseSolution
+import io.c6.aoc.util.BaseSolution.*
+import io.c6.aoc.util.Day.*
+import io.c6.aoc.util.InputType.*
+import io.c6.aoc.util.Year.*
 
 import scala.collection.mutable
 
@@ -19,17 +19,17 @@ object Day08 extends BaseSolution:
       grid.map(_.map(mapper).mkString(" ")).foreach(println)
       println()
 
-  override protected def part1Solution: Seq[String] => Unit = { input =>
+  override protected def part1Solution: Seq[String] => Unit = input =>
     val rows -> cols = input.length -> input.head.length
     val treeGrid: Grid[Byte] = Array.ofDim[Byte](rows, cols)
     val visibilityGrid: Grid[Boolean] = Array.ofDim[Boolean](rows, cols)
 
-    for i <- 0 until rows; j <- 0 until cols yield
+    for i <- 0 until rows; j <- 0 until cols do
       treeGrid(i)(j) = input(i)(j).asDigit.toByte
       visibilityGrid(i)(j) = false
-    // treeGrid.print(_.toString)
+    //treeGrid.print(_.toString)
 
-    for i <- 0 until rows; j <- 0 until cols yield (i, j) match
+    for i <- 0 until rows; j <- 0 until cols do (i, j) match
       case (a, _) if a == 0 || a == rows - 1 =>
         visibilityGrid(i)(j) = true
       case (_, b) if b == 0 || b == cols - 1 =>
@@ -41,22 +41,21 @@ object Day08 extends BaseSolution:
         val up = (0 until a).exists(treeGrid(_)(b) >= h)
         val down = (a + 1 until rows).exists(treeGrid(_)(b) >= h)
         visibilityGrid(i)(j) = !(left && right && up && down)
-    // visibilityGrid.print(if _ then "1" else "0")
+    //visibilityGrid.print(if _ then "1" else "0")
 
     val result = visibilityGrid.map(_.count(identity)).sum
     println(s"Result for part 1: $result")
-  }
 
-  override protected def part2Solution: Seq[String] => Unit = { input =>
+  override protected def part2Solution: Seq[String] => Unit = input =>
     val rows -> cols = input.length -> input.head.length
     val treeGrid: Grid[Byte] = Array.ofDim[Byte](rows, cols)
     val scenicScoreGrid: Grid[Int] = Array.ofDim[Int](rows, cols)
 
-    for i <- 0 until rows; j <- 0 until cols yield
+    for i <- 0 until rows; j <- 0 until cols do
       treeGrid(i)(j) = input(i)(j).asDigit.toByte
       scenicScoreGrid(i)(j) = 0
 
-    for i <- 0 until rows; j <- 0 until cols yield (i, j) match
+    for i <- 0 until rows; j <- 0 until cols do (i, j) match
       case (a, _) if a == 0 || a == rows - 1 =>
         scenicScoreGrid(i)(j) = 0
       case (_, b) if b == 0 || b == cols - 1 =>
@@ -71,10 +70,9 @@ object Day08 extends BaseSolution:
         val up = visibleTreeCount((0 until a).reverse.map(treeGrid(_)(b)))
         val down = visibleTreeCount((a + 1 until rows).map(treeGrid(_)(b)))
         scenicScoreGrid(i)(j) = left * right * up * down
-    // scenicScoreGrid.print(s => s"%2d".format(s))
+    //scenicScoreGrid.print(s => s"%2d".format(s))
 
     val result = scenicScoreGrid.map(_.max).max
     println(s"Result for part 2: $result")
-  }
 
 @main def runDay08: Unit = Day08.run

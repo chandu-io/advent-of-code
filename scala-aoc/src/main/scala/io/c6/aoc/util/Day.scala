@@ -1,0 +1,30 @@
+package io.c6.aoc.util
+
+private final class Day(val value: String) extends AnyVal
+
+object Day:
+  val _01: Day = Day("01")
+  val _02: Day = Day("02")
+  val _03: Day = Day("03")
+  val _04: Day = Day("04")
+  val _05: Day = Day("05")
+  val _06: Day = Day("06")
+  val _07: Day = Day("07")
+  val _08: Day = Day("08")
+  val _09: Day = Day("09")
+  val _10: Day = Day("10")
+  val _11: Day = Day("11")
+  val _12: Day = Day("12")
+  val _13: Day = Day("13")
+  val _14: Day = Day("14")
+  val _15: Day = Day("15")
+  val _16: Day = Day("16")
+  val _17: Day = Day("17")
+  val _18: Day = Day("18")
+  val _19: Day = Day("19")
+  val _20: Day = Day("20")
+  val _21: Day = Day("21")
+  val _22: Day = Day("22")
+  val _23: Day = Day("23")
+  val _24: Day = Day("24")
+  val _25: Day = Day("25")

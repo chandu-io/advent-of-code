@@ -1,13 +1,12 @@
 package io.c6.aoc.y2022
 
-import io.c6.aoc.BaseSolution
-import io.c6.aoc.BaseSolution.*
-import io.c6.aoc.Day.*
-import io.c6.aoc.Year.*
-import io.c6.aoc.InputType.*
+import io.c6.aoc.util.BaseSolution
+import io.c6.aoc.util.BaseSolution.*
+import io.c6.aoc.util.Day.*
+import io.c6.aoc.util.InputType.*
+import io.c6.aoc.util.Year.*
 
 object Day01 extends BaseSolution:
-
   protected override val part1InputFileName: String = getInputFileName(_2022, _01, A1)
 
   private case class Triplet(private val list: List[Int] = List.empty):
@@ -19,10 +18,10 @@ object Day01 extends BaseSolution:
 
     def replaceIfBigger(d: Int): Triplet =
       val m = min
-      if (d > m)
-        if (m == a) this.copy(List(d, b, c))
-        else if (m == b) this.copy(List(a, d, c))
-        else if (m == c) this.copy(List(a, b, d))
+      if d > m then
+        if m == a then this.copy(List(d, b, c))
+        else if m == b then this.copy(List(a, d, c))
+        else if m == c then this.copy(List(a, b, d))
         else this
       else this
 
@@ -35,23 +34,21 @@ object Day01 extends BaseSolution:
     override def toString: String = s"$a, $b, $c"
 
   private def mostCalories(input: Seq[String]): Triplet =
-    val (triplet, acc) = input.scanLeft((Triplet(), 0)) { (pair, line) =>
+    val (triplet, acc) = input.foldLeft(Triplet() -> 0) { case pair -> line =>
       line match
         case "" => pair match
-          case (triplet, acc) => (triplet.replaceIfBigger(acc), 0)
+          case triplet -> acc => triplet.replaceIfBigger(acc) -> 0
         case s => pair match
-          case (triplet, acc) => (triplet, acc + s.toInt)
-    }.last
+          case triplet -> acc => triplet -> (acc + s.toInt)
+    }
     triplet.replaceIfBigger(acc)
 
-  protected override def part1Solution: Seq[String] => Unit = { input =>
+  protected override def part1Solution: Seq[String] => Unit = input =>
     val result = mostCalories(input).max
     println(s"Result for part 1: $result")
-  }
 
-  protected override def part2Solution: Seq[String] => Unit = { input =>
+  protected override def part2Solution: Seq[String] => Unit = input =>
     val result = mostCalories(input).sum
     println(s"Result for part 2: $result")
-  }
 
 @main def runDay01: Unit = Day01.run
