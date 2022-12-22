@@ -1,16 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
 import scala.language.implicitConversions
 
-object Day02 extends BaseSolution:
-  protected override val part1InputFileName: String = getInputFileName(_2022, _02, A1)
+@main def _2022_02: Unit = Day02()
 
+object Day02 extends BaseSolution(_2022, _02):
   import StringConversions.given
 
   private sealed trait Outcome(val points: Int)
@@ -102,5 +101,3 @@ object Day02 extends BaseSolution:
   protected override def part2Solution: Seq[String] => Unit = input =>
     val result = input.map(pointsForStrategy2(_)).sum
     println(s"Result for part 2: $result")
-
-@main def runDay02: Unit = Day02.run

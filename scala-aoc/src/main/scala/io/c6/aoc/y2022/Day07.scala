@@ -1,16 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
 import scala.collection.mutable
 
-object Day07 extends BaseSolution:
-  override protected def part1InputFileName: String = getInputFileName(_2022, _07, A1)
+@main def _2022_07: Unit = Day07()
 
+object Day07 extends BaseSolution(_2022, _07):
   private val slash = "/"
 
   private sealed trait FileEntry:
@@ -80,5 +79,3 @@ object Day07 extends BaseSolution:
     val removableSpace = requiredFreeSpace - remainingSpace
     val result = executor.allDirs.toSeq.map(_.size).filter(_ > removableSpace).min
     println(s"Result for part 2: $result")
-
-@main def runDay07: Unit = Day07.run

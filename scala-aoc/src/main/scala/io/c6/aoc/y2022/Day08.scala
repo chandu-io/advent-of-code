@@ -1,15 +1,14 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
-//noinspection DuplicatedCode
-object Day08 extends BaseSolution:
-  override protected def part1InputFileName: String = getInputFileName(_2022, _08, A1)
+@main def _2022_08: Unit = Day08()
 
+//noinspection DuplicatedCode
+object Day08 extends BaseSolution(_2022, _08):
   private type Grid[T] = Array[Array[T]]
 
   extension[T] (grid: Grid[T])
@@ -78,5 +77,3 @@ object Day08 extends BaseSolution:
 
     val result = scenicScoreGrid.map(_.max).max
     println(s"Result for part 2: $result")
-
-@main def runDay08: Unit = Day08.run

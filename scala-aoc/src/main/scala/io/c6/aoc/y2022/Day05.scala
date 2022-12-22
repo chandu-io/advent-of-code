@@ -1,16 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
 import scala.collection.mutable
 
-object Day05 extends BaseSolution:
-  override protected def part1InputFileName: String = getInputFileName(_2022, _05, A1)
+@main def _2022_05: Unit = Day05()
 
+object Day05 extends BaseSolution(_2022, _05):
   private type Crate = Char
   private type Stack = mutable.Stack[Crate]
 
@@ -71,5 +70,3 @@ object Day05 extends BaseSolution:
     val stacks = Array.fill((input.head.length + 1) / gap)(new Stack)
     val result = input.foldLeft(stacks)(processInstruction(CrateMover9001)).map(_.top).mkString
     println(s"Result for part 2: $result")
-
-@main def runDay05: Unit = Day05.run

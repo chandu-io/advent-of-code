@@ -1,16 +1,15 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
 import scala.language.implicitConversions
 
-object Day04 extends BaseSolution:
-  override protected def part1InputFileName: String = getInputFileName(_2022, _04, A1)
+@main def _2022_04: Unit = Day04()
 
+object Day04 extends BaseSolution(_2022, _04):
   private type Assignment = (Int, Int)
   private type AssignmentPair = (Assignment, Assignment)
 
@@ -35,5 +34,3 @@ object Day04 extends BaseSolution:
   override protected def part2Solution: Seq[String] => Unit = input =>
     val result = input.count(partiallyOverlaps(_))
     println(s"Result for part 1: $result")
-
-@main def runDay04: Unit = Day04.run

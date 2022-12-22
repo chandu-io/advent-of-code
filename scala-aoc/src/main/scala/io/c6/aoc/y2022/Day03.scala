@@ -1,14 +1,13 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
-object Day03 extends BaseSolution:
-  protected override val part1InputFileName: String = getInputFileName(_2022, _03, A1)
-  protected override val part2InputFileName: String = getInputFileName(_2022, _03, A2)
+@main def _2022_03: Unit = Day03()
+
+object Day03 extends BaseSolution(_2022, _03):
 
   private val priorityMap: Map[Char, Int] = ('a' to 'z').appendedAll('A' to 'Z')
     .zipWithIndex.toMap.transform { case _ -> p => p + 1 }
@@ -30,5 +29,3 @@ object Day03 extends BaseSolution:
   protected override def part2Solution: Seq[String] => Unit = input =>
     val result = input.grouped(3).map(_.priority).sum
     println(s"Result for part 2: $result")
-
-@main def runDay03: Unit = Day03.run

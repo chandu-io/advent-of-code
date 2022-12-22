@@ -1,14 +1,13 @@
 package io.c6.aoc.y2022
 
 import io.c6.aoc.util.BaseSolution
-import io.c6.aoc.util.BaseSolution.*
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
-object Day01 extends BaseSolution:
-  protected override val part1InputFileName: String = getInputFileName(_2022, _01, A1)
+@main def _2022_01: Unit = Day01()
 
+object Day01 extends BaseSolution(_2022, _01):
   private case class Triplet(private val list: List[Int] = List.empty):
     val (a, b, c) = list match
       case a :: b :: c :: _ => (a, b, c)
@@ -50,5 +49,3 @@ object Day01 extends BaseSolution:
   protected override def part2Solution: Seq[String] => Unit = input =>
     val result = mostCalories(input).sum
     println(s"Result for part 2: $result")
-
-@main def runDay01: Unit = Day01.run

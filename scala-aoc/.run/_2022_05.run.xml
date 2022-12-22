@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="y2022.runDay03" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="io.c6.aoc.y2022.runDay03" />
+  <configuration default="false" name="_2022_05" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.c6.aoc.y2022._2022_05" />
     <module name="scala-aoc" />
     <extension name="coverage">
       <pattern>
