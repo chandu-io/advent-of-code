@@ -10,6 +10,7 @@ import scala.language.implicitConversions
 
 @main def _2022_09: Unit = Day09()
 
+//noinspection DuplicatedCode
 object Day09 extends BaseSolution(_2022, _09):
   private type Position = (Int, Int)
 
@@ -73,7 +74,7 @@ object Day09 extends BaseSolution(_2022, _09):
     def uniqueVisitedPositions: Int = visited.size
 
   private def printKnots(knotPositions: List[Position]): Unit =
-    def minMaxRange(list: List[Int]): Range = list.reduce(Math.min) to list.reduce(Math.max)
+    val minMaxRange: List[Int] => Range = list => list.reduce(Math.min) to list.reduce(Math.max)
     val cols = minMaxRange(knotPositions.map(_.x))
     val rows = minMaxRange(knotPositions.map(_.y)).reverse
     rows.foreach { y =>
