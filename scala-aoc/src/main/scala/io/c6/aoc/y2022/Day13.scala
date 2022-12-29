@@ -16,25 +16,30 @@ object Day13 extends BaseSolution(_2022, _13):
   private val separator = ","
   private val empty = ""
   private val space = " "
-  private type Signal = Packet | Data
 
-  private case class Packet(signals: Signal*) extends Ordered[Packet]:
+  private sealed trait Signal extends Ordered[Signal]:
+    override def compare(that: Signal): Int = this -> that match
+      case (Data(x), Data(y)) => x.compare(y)
+      case (packet: Packet, data: Data) => packet.compare(Packet(data))
+      case (data: Data, packet: Packet) => Packet(data).compare(packet)
+      case (packetLeft: Packet, packetRight: Packet) => packetLeft.compare(packetRight)
+
+  private object Signal extends Ordering[Signal]:
+    override def compare(x: Signal, y: Signal): Int = x compare y
+
+  private case class Packet(private val signals: Signal*) extends Signal:
     private def appended(signal: Signal): Packet = Packet(signals :+ signal: _*)
 
-    def compare(other: Packet): Int =
-      val result = signals.zip(other.signals).map {
-        case (Data(x), Data(y)) => x.compare(y)
-        case (packet: Packet, data: Data) => packet.compare(Packet(data))
-        case (data: Data, packet: Packet) => Packet(data).compare(packet)
-        case (packetLeft: Packet, packetRight: Packet) => packetLeft.compare(packetRight)
-        case _ => 0
-      }
-      val (m, n) = signals.length -> other.signals.length
-      result.dropWhile(_ == 0).headOption.getOrElse(m.compare(n))
+    override def compare(other: Signal): Int = other match
+      case Packet(oSignals: _*) =>
+        // break early when signals are not equal
+        signals.zip(oSignals).find(!Signal.equiv(_, _)).map(Signal.compare)
+          .getOrElse(signals.length.compare(oSignals.length))
+      case _ => super.compare(other)
 
     override def toString: String = signals.mkString(start, separator, end)
 
-  private case class Data(value: Int):
+  private case class Data(private val value: Int) extends Signal:
     override def toString: String = value.toString
 
   private object Packet:
