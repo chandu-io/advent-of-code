@@ -108,41 +108,41 @@ object Utils:
 
   object PairExt:
     extension[A, B] (pair: (A, B))
-      def a: A = pair._1
-      def b: B = pair._2
-      def transform[A1, B1](fa: A => A1, fb: B => B1): (A1, B1) = fa(pair.a) -> fb(pair.b)
+      def first: A = pair._1
+      def second: B = pair._2
+      def transform[A1, B1](fa: A => A1, fb: B => B1): (A1, B1) = fa(pair.first) -> fb(pair.second)
 
     extension[A] (pair: (A, A))
-      def toSeq: Seq[A] = Seq(pair.a, pair.b)
+      def toSeq: Seq[A] = Seq(pair.first, pair.second)
       def map[A1](f: A => A1): (A1, A1) = pair.transform(f, f)
-      def max(implicit ord: Ordering[A]): A = ord.max(pair.a, pair.b)
-      def min(implicit ord: Ordering[A]): A = ord.min(pair.a, pair.b)
-      def equiv(implicit ord: Ordering[A]): Boolean = ord.equiv(pair.a, pair.b)
+      def max(implicit ord: Ordering[A]): A = ord.max(pair.first, pair.second)
+      def min(implicit ord: Ordering[A]): A = ord.min(pair.first, pair.second)
+      def equiv(implicit ord: Ordering[A]): Boolean = ord.equiv(pair.first, pair.second)
 
     extension[A, B] (pair: (Option[A], Option[B]))
-      def flatten: Option[(A, B)] = (pair.a, pair.b) match
+      def flatten: Option[(A, B)] = (pair.first, pair.second) match
         case Some(a) -> Some(b) => Some(a -> b)
         case _ => None
 
   object TripletExt:
     extension[A, B, C] (triplet: (A, B, C))
-      def a: A = triplet._1
-      def b: B = triplet._2
-      def c: C = triplet._3
+      def first: A = triplet._1
+      def second: B = triplet._2
+      def third: C = triplet._3
       def transform[A1, B1, C1](fa: A => A1, fb: B => B1, fc: C => C1): (A1, B1, C1) =
-        fa(triplet.a) <> fb(triplet.b) <> fc(triplet.c)
+        fa(triplet.first) <> fb(triplet.second) <> fc(triplet.third)
 
     extension[A] (triplet: (A, A, A))
-      def toSeq: Seq[A] = Seq(triplet.a, triplet.b, triplet.c)
+      def toSeq: Seq[A] = Seq(triplet.first, triplet.second, triplet.third)
       def map[B](f: A => B): (B, B, B) = triplet.transform(f, f, f)
       def max(implicit ord: Ordering[A]): A =
-        ord.max(ord.max(triplet.a, triplet.b), ord.max(triplet.b, triplet.c))
+        ord.max(ord.max(triplet.first, triplet.second), ord.max(triplet.second, triplet.third))
       def min(implicit ord: Ordering[A]): A =
-        ord.min(ord.min(triplet.a, triplet.b), ord.min(triplet.b, triplet.c))
+        ord.min(ord.min(triplet.first, triplet.second), ord.min(triplet.second, triplet.third))
       def equiv(implicit ord: Ordering[A]): Boolean =
-        ord.equiv(triplet.a, triplet.b) && ord.equiv(triplet.b, triplet.c)
+        ord.equiv(triplet.first, triplet.second) && ord.equiv(triplet.second, triplet.third)
 
     extension[A, B, C] (triplet: (Option[A], Option[B], Option[C]))
-      def flatten: Option[(A, B, C)] = triplet.a -> triplet.b -> triplet.c match
+      def flatten: Option[(A, B, C)] = triplet.first -> triplet.second -> triplet.third match
         case Some(a) -> Some(b) -> Some(c) => Some(a <> b <> c)
         case _ => None

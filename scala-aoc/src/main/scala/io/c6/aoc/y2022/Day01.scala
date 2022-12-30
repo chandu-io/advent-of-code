@@ -15,9 +15,9 @@ object Day01 extends BaseSolution(_2022, _01):
     private def replaceIfBigger(d: Int): Triplet =
       val m = triplet.min
       if d > m then
-        if m == triplet.a then d <> triplet.b <> triplet.c
-        else if m == triplet.b then triplet.a <> d <> triplet.c
-        else if m == triplet.c then triplet.a <> triplet.b <> d
+        if m == triplet.first then d <> triplet.second <> triplet.third
+        else if m == triplet.second then triplet.first <> d <> triplet.third
+        else if m == triplet.third then triplet.first <> triplet.second <> d
         else triplet
       else triplet
 

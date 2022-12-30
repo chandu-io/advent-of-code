@@ -60,8 +60,8 @@ object Day11 extends BaseSolution(_2022, _11):
 
     def updateTestMonkeys(all: Seq[Monkey]): Unit =
       val zipped = all.zipWithIndex
-      maybeSuccessMonkey = zipped.find(_.b == successMonkeyId).map(_.a)
-      maybeFailureMonkey = zipped.find(_.b == failureMonkeyId).map(_.a)
+      maybeSuccessMonkey = zipped.find(_.second == successMonkeyId).map(_.first)
+      maybeFailureMonkey = zipped.find(_.second == failureMonkeyId).map(_.first)
 
     private def receiveItem(item: Long): Unit = items.enqueue(item)
 
