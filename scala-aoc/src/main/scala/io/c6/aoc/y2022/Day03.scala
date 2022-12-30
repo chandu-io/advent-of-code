@@ -5,7 +5,7 @@ import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
 
-@main def _2022_03: Unit = Day03()
+@main def _2022_03: Unit = Day03(Actual)
 
 object Day03 extends BaseSolution(_2022, _03):
 
@@ -13,10 +13,7 @@ object Day03 extends BaseSolution(_2022, _03):
     .zipWithIndex.toMap.transform { case _ -> p => p + 1 }
 
   extension (str: String)
-    private def half: Seq[String] =
-      val n = str.length / 2
-      val (leftHalf, rightHalf) = str.zipWithIndex.partition { case _ -> i => i < n }
-      Seq(leftHalf.map(_._1).mkString, rightHalf.map(_._1).mkString)
+    private def half: Seq[String] = str.grouped(str.length / 2).toSeq
 
   extension (seq: Seq[String])
     private def priority: Int =
