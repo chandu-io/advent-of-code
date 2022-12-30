@@ -12,6 +12,7 @@ object Day08 extends BaseSolution(_2022, _08):
   private type Grid[T] = Array[Array[T]]
 
   extension[T] (grid: Grid[T])
+    //noinspection ScalaUnusedSymbol
     private def print(toString: Function[T, String]): Unit =
       grid.map(_.map(toString).mkString(" ")).foreach(println)
       println()

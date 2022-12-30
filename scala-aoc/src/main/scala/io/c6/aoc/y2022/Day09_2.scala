@@ -63,6 +63,7 @@ object Day09_2 extends BaseSolution(_2022, _09):
       }
     uniqueTailCoordinates
 
+  //noinspection ScalaUnusedSymbol
   private def printKnots(knots: Seq[Coordinate]): Unit =
     val minMaxRange: Seq[Int] => Range = seq => seq.reduce(Math.min) to seq.reduce(Math.max)
     val cols = minMaxRange(knots.map(_.x))

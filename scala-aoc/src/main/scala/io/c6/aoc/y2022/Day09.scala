@@ -73,6 +73,7 @@ object Day09 extends BaseSolution(_2022, _09):
 
     def uniqueVisitedPositions: Int = visited.size
 
+  //noinspection ScalaUnusedSymbol
   private def printKnots(knotPositions: List[Position]): Unit =
     val minMaxRange: List[Int] => Range = list => list.reduce(Math.min) to list.reduce(Math.max)
     val cols = minMaxRange(knotPositions.map(_.x))
