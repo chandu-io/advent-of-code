@@ -4,7 +4,7 @@ import scala.annotation.{tailrec, targetName}
 import scala.collection.mutable
 import scala.concurrent.duration.{Duration, NANOSECONDS}
 
-//noinspection ScalaWeakerAccess, ScalaUnusedSymbol
+//noinspection ScalaWeakerAccess,ScalaUnusedSymbol
 object Utils:
   def time[T](operation: => T): T =
     val startTime = System.nanoTime()
@@ -12,6 +12,10 @@ object Utils:
     val elapsedDuration = Duration(System.nanoTime() - startTime, NANOSECONDS)
     println(s"Time taken: ${elapsedDuration.toMillis} milliseconds")
     result
+
+  def clamp(value: Int, range: Range): Int =
+    val (min, max) = range.head -> range.last
+    if value < min then min else if value > max then max else value
 
   object TripletImplicits:
 
@@ -123,6 +127,27 @@ object Utils:
       def flatten: Option[(A, B)] = (pair.first, pair.second) match
         case Some(a) -> Some(b) => Some(a -> b)
         case _ => None
+
+    extension (pair: (Int, Int))
+      @targetName("plus")
+      def +(other: (Int, Int)): (Int, Int) =
+        pair.transform(_ + other.first, _ + other.second)
+
+      @targetName("minus")
+      def -(other: (Int, Int)): (Int, Int) =
+        pair.transform(_ - other.first, _ - other.second)
+
+      def clamped(firstRange: Range, secondRange: Range): (Int, Int) =
+        clamp(pair.first, firstRange) -> clamp(pair.second, secondRange)
+
+      def adjacentPairs(units: Int = 1): Seq[(Int, Int)] =
+        Direction.cardinals.map(_.distance.map(_ * units)).map(_ + pair)
+
+      def diagonalPairs(units: Int = 1): Seq[(Int, Int)] =
+        Direction.interCardinals.map(_.distance.map(_ * units)).map(_ + pair)
+
+      def surroundingPairs(units: Int = 1): Seq[(Int, Int)] =
+        adjacentPairs(units) ++ diagonalPairs(units)
 
   object TripletExt:
     extension[A, B, C] (triplet: (A, B, C))
