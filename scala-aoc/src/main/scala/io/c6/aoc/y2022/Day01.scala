@@ -4,36 +4,25 @@ import io.c6.aoc.util.BaseSolution
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
+import io.c6.aoc.util.Utils.TripletImplicits.*
+import io.c6.aoc.util.Utils.TripletExt.*
 
 @main def _2022_01: Unit = Day01()
 
 object Day01 extends BaseSolution(_2022, _01):
-  private case class Triplet(private val list: List[Int] = List.empty):
-    val (a, b, c) = list match
-      case a :: b :: c :: _ => (a, b, c)
-      case a :: b :: Nil => (a, b, 0)
-      case a :: Nil => (a, 0, 0)
-      case Nil => (0, 0, 0)
-
-    def replaceIfBigger(d: Int): Triplet =
-      val m = min
+  private type Triplet = (Int, Int, Int)
+  extension (triplet: Triplet)
+    private def replaceIfBigger(d: Int): Triplet =
+      val m = triplet.min
       if d > m then
-        if m == a then this.copy(List(d, b, c))
-        else if m == b then this.copy(List(a, d, c))
-        else if m == c then this.copy(List(a, b, d))
-        else this
-      else this
-
-    def max: Int = Math.max(a, Math.max(b, c))
-
-    def min: Int = Math.min(a, Math.min(b, c))
-
-    def sum: Int = a + b + c
-
-    override def toString: String = s"$a, $b, $c"
+        if m == triplet.a then d <> triplet.b <> triplet.c
+        else if m == triplet.b then triplet.a <> d <> triplet.c
+        else if m == triplet.c then triplet.a <> triplet.b <> d
+        else triplet
+      else triplet
 
   private def mostCalories(input: Seq[String]): Triplet =
-    val (triplet, acc) = input.foldLeft(Triplet() -> 0) { case pair -> line =>
+    val (triplet, acc) = input.foldLeft((0, 0, 0) -> 0) { (pair, line) =>
       line match
         case "" => pair match
           case triplet -> acc => triplet.replaceIfBigger(acc) -> 0
@@ -47,5 +36,5 @@ object Day01 extends BaseSolution(_2022, _01):
     println(s"Result for part 1: $result")
 
   protected override def part2Solution: Seq[String] => Unit = input =>
-    val result = mostCalories(input).sum
+    val result = mostCalories(input).toSeq.sum
     println(s"Result for part 2: $result")
