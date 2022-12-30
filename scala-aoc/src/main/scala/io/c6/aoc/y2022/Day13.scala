@@ -70,7 +70,7 @@ object Day13 extends BaseSolution(_2022, _13):
       packet
 
   protected def part1Solution: Seq[String] => Unit = input =>
-    import io.c6.aoc.util.Utils.SeqExt.*
+    import io.c6.aoc.util.Utils.IterableExt.*
     val packetPairs = input.split(empty)
     val result = packetPairs.zipWithIndex
       .filter { (seq, _) => seq.map(Packet(_)).toPairOption.exists(_ < _) }
