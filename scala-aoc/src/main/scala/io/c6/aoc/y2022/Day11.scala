@@ -4,11 +4,12 @@ import io.c6.aoc.util.BaseSolution
 import io.c6.aoc.util.Day.*
 import io.c6.aoc.util.InputType.*
 import io.c6.aoc.util.Year.*
+import io.c6.aoc.util.Utils.PairExt.*
 
 import scala.collection.mutable
 import scala.language.implicitConversions
 
-@main def _2022_11: Unit = Day11()
+@main def _2022_11: Unit = Day11(Actual)
 
 object Day11 extends BaseSolution(_2022, _11):
   private type Operation = Function[Long, Long]
@@ -59,22 +60,22 @@ object Day11 extends BaseSolution(_2022, _11):
 
     def updateTestMonkeys(all: Seq[Monkey]): Unit =
       val zipped = all.zipWithIndex
-      maybeSuccessMonkey = zipped.find(_._2 == successMonkeyId).map(_._1)
-      maybeFailureMonkey = zipped.find(_._2 == failureMonkeyId).map(_._1)
+      maybeSuccessMonkey = zipped.find(_.b == successMonkeyId).map(_.a)
+      maybeFailureMonkey = zipped.find(_.b == failureMonkeyId).map(_.a)
 
     private def receiveItem(item: Long): Unit = items.enqueue(item)
 
     def inspectItems(worryReducer: Operation): Unit =
       while items.nonEmpty do
-        (maybeSuccessMonkey, maybeFailureMonkey) match
-          case Some(successMonkey) -> Some(failureMonkey) =>
+        (maybeSuccessMonkey, maybeFailureMonkey).flatten match
+          case Some(successMonkey -> failureMonkey) =>
             inspectionCount += 1
             var item = items.dequeue()
             item = operation(item)
             item = worryReducer(item)
             if item % testDivisor == 0 then successMonkey.receiveItem(item)
             else failureMonkey.receiveItem(item)
-          case _ => Console.err.println("Before inspecting, call updateTestMonkeys method")
+          case None => Console.err.println("Before inspecting, call updateTestMonkeys method")
 
     def inspections: Long = inspectionCount
 
