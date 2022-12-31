@@ -14,6 +14,7 @@ object Day12 extends BaseSolution(_2022, _12):
   private type Location = (Int, Int)
   private type Elevation = Int
 
+  // TODO: Refactor using util.Grid class
   private class Grid private(rows: Int, cols: Int, start: Location, end: Location, cellData: Array[Array[Elevation]]):
     require(rows > 0, s"Invalid row count: $rows")
     require(cols > 0, s"Invalid column count: $cols")
