@@ -55,6 +55,7 @@ class Grid[A](
   def withinRange(position: Position): Boolean = withinRange(position.first, position.second)
 
   def print(toString: A => String = _.toString): Unit =
+    // TODO: Use trimmed ranges to print
     rowRange.foreach { row =>
       colRange.foreach { col =>
         val s = toString(Try(cells(row -> col)).map(_.data).getOrElse(defaultCellData))
