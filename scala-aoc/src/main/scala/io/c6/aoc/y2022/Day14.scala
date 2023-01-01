@@ -28,20 +28,9 @@ object Day14 extends BaseSolution(_2022, _14):
 
   private val sandPropagationOrder = Seq(Direction.S, Direction.SW, Direction.SE)
 
-  private def stepPart1(structure: Grid[Element]): Position => Option[Position] = position =>
-    structure(position).neighbours(sandPropagationOrder)
-      .find(c => structure(c.position).data == Air).map(_.position)
-
-  private def stepPart2(structure: Grid[Element], last: Int): Position => Option[Position] = position =>
-    val maybeNextCell = structure(position).neighbours(sandPropagationOrder)
-      .find(c => structure(c.position).data == Air && c.position.first != last)
-    maybeNextCell.map(_.position)
-
-  private def parse(
-                     sandStartPositionStr: String,
-                     paths: Seq[String],
-                   ): (Position, Map[Position, Element], Range, Range) =
-    val rockPositions = paths.flatMap {
+  private class Structure(sandStartPositionStr: String, paths: Seq[String], isPart1: Boolean):
+    private val sandPosition = sandStartPositionStr.splitToPair(",").map(_.toInt).swap
+    private val rockPositions = paths.flatMap {
       _.splitToSeq(" -> ").map(_.splitToPair(",").map(_.toInt))
         .sliding(2).map(_.toPair)
         .flatMap { (a, b) =>
@@ -51,38 +40,40 @@ object Day14 extends BaseSolution(_2022, _14):
           else Seq(a, b)
         }.toSeq.distinct
     }.distinct.map(_.swap)
-    val sandPosition = sandStartPositionStr.splitToPair(",").map(_.toInt).swap
-    val (rows, cols) = (sandPosition +: rockPositions).unzip
-    val rowRange = rows.min to rows.max
-    val colRange = cols.min to cols.max
-    val positionToElements = (sandPosition -> Sand) +: rockPositions.map(_ -> Rock)
-    val elementMap: Map[Position, Element] = Map.from(positionToElements)
-    (sandPosition, elementMap, rowRange, colRange)
+    private val (rowSeq, colSeq) = (sandPosition +: rockPositions).unzip
+    private val rowRange = if isPart1 then rowSeq.min to rowSeq.max else rowSeq.min to rowSeq.max + 2
+    private val colRange = if isPart1 then colSeq.min to colSeq.max else InfRange
+    private val elementMap = Map.from((sandPosition -> Sand) +: rockPositions.map(_ -> Rock))
+    private val grid = new Grid(elementMap, Air, false, PositionRange(rowRange, colRange))
 
-  private def simulate(sandPosition: Position, structure: Grid[Element], step: Position => Option[Position]): Int =
-    var done = false
-    while !done do
-      var currPosition = sandPosition
-      var canMoveSouth = true
-      while !done && canMoveSouth do
-        step(currPosition) match
-          case Some(nextPosition) =>
-            currPosition = nextPosition
-          case None =>
-            canMoveSouth = false
-            structure(currPosition) = Sand
-        done = !structure.withinRange(currPosition + Direction.SW.distance) || currPosition == sandPosition
-    structure.count(_ == Sand)
+    private def getNextPart1(position: Position): Option[Position] =
+      grid(position).neighbours(sandPropagationOrder)
+        .find(c => grid(c.position).data == Air).map(_.position)
+
+    private def getNextPart2(position: Position): Option[Position] =
+      grid(position).neighbours(sandPropagationOrder)
+        .find(c => grid(c.position).data == Air && c.position.first != rowRange.end).map(_.position)
+
+    lazy val simulate: Int =
+      var done = false
+      while !done do
+        var currPosition = sandPosition
+        var canMoveSouth = true
+        while !done && canMoveSouth do
+          val maybeNextPosition = if isPart1 then getNextPart1(currPosition) else getNextPart2(currPosition)
+          maybeNextPosition match
+            case Some(nextPosition) =>
+              currPosition = nextPosition
+            case None =>
+              canMoveSouth = false
+              grid(currPosition) = Sand
+          done = !grid.withinRange(currPosition + Direction.SW.distance) || currPosition == sandPosition
+      grid.count(_ == Sand)
 
   protected def part1Solution: Seq[String] => Unit = input =>
-    val (sandPosition, elementMap, rowRange, colRange) = parse("500,0", input)
-    val structure = new Grid(elementMap, Air, false, PositionRange(rowRange, colRange))
-    val result = simulate(sandPosition, structure, stepPart1(structure)) - 1
+    val result = new Structure("500,0", input, true).simulate - 1
     println(s"Result for part 1: $result")
 
   protected def part2Solution: Seq[String] => Unit = input =>
-    val (sandPosition, elementMap, rowRange, _) = parse("500,0", input)
-    val range = rowRange.start to (rowRange.end + 2)
-    val structure = new Grid(elementMap, Air, false, PositionRange(range, InfRange))
-    val result = simulate(sandPosition, structure, stepPart2(structure, range.end))
+    val result = new Structure("500,0", input, false).simulate
     println(s"Result for part 2: $result")
